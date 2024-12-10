@@ -1,1 +1,2 @@
 bind_addr: "127.0.0.1:8080"
+db_url: "postgresql://oclus:password@localhost:5432/oclus"

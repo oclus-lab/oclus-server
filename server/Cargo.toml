@@ -8,3 +8,4 @@ anyhow = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_yaml = { version = "0.9" }
 actix-web = { version = "4.9" }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres"] }

@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: oclus
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: oclus
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

@@ -6,6 +6,7 @@ use std::path::Path;
 #[derive(Deserialize, Clone, Debug)]
 pub struct OclusConfig {
     pub bind_addr: String,
+    pub db_url: String,
 }
 
 impl OclusConfig {
