@@ -1,4 +1,4 @@
 pub mod domain;
-pub mod outbound;
-pub mod inbound;
+pub mod infra;
+pub mod api;
 pub mod config;
