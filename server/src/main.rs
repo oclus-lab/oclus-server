@@ -1,7 +1,7 @@
 use actix_web::web::Data;
 use actix_web::{App, HttpServer};
 use oclus_server::config::OclusConfig;
-use oclus_server::infra::db::OclusDatabase;
+use oclus_server::infra::repo::OclusDatabase;
 
 #[actix_web::main]
 async fn main() -> Result<(), anyhow::Error> {

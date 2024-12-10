@@ -4,8 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { workspace = true }
-serde = { workspace = true, features = ["derive"] }
+thiserror = { version = "2.0" }
+anyhow = { version = "1.0" }
+serde = { version = "1.0" }
 serde_yaml = { version = "0.9" }
+uuid = { version = "1.11", features = ["serde"] }
+chrono = { version = "0.4", features = ["serde"] }
 actix-web = { version = "4.9" }
 sqlx = { version = "0.8", features = ["runtime-tokio", "postgres"] }
+validator = { version = "0.19", features = ["derive"] }

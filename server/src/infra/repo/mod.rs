@@ -1,5 +1,5 @@
-use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
+use sqlx::postgres::PgPoolOptions;
 
 #[derive(Clone, Debug)]
 pub struct OclusDatabase {
