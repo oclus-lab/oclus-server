@@ -1,1 +1,2 @@
-fn main() {}
+#[actix_web::main]
+async fn main() {}
