@@ -4,7 +4,6 @@ use actix_web::web::Json;
 use actix_web::{HttpResponse, ResponseError};
 use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
-use validator::ValidationErrors;
 
 #[derive(Clone, Debug)]
 pub struct ApiError {
@@ -57,12 +56,5 @@ impl From<anyhow::Error> for ApiError {
     fn from(value: anyhow::Error) -> Self {
         log::error!("{:?}", value);
         ApiError::from(ApiErrorKind::Unknown)
-    }
-}
-
-impl From<ValidationErrors> for ApiError {
-    fn from(value: ValidationErrors) -> Self {
-        log::info!("invalid data provided: {:?}", value);
-        ApiError::from(ApiErrorKind::InvalidData(value.to_string()))
     }
 }

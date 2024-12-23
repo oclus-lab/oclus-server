@@ -1,4 +1,5 @@
 use crate::api::error::{ApiError, ApiErrorKind};
+use crate::api::middleware::validation::ValidatedJson;
 use crate::config::Config;
 use crate::db::repo::RepoCollection;
 use crate::model::user::{PreRegisterUserRequest, RegisterUserRequest};
@@ -13,7 +14,7 @@ pub fn define_routes(cfg: &mut web::ServiceConfig) {
 
 #[post("/user/register/pre")]
 async fn pre_register(
-    req: Json<PreRegisterUserRequest>,
+    req: ValidatedJson<PreRegisterUserRequest>,
     repo_collection: Data<RepoCollection>,
     config: Data<Config>,
 ) -> Result<Json<i64>, ApiError> {
@@ -57,7 +58,7 @@ async fn pre_register(
 
 #[post("/user/register")]
 async fn register(
-    req: Json<RegisterUserRequest>,
+    req: ValidatedJson<RegisterUserRequest>,
     repo_col: Data<RepoCollection>,
 ) -> Result<Json<i64>, ApiError> {
     let pre_registration = repo_col
