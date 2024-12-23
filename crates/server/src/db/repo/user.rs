@@ -11,12 +11,22 @@ impl UserRepo {
         Self { database }
     }
 
-    pub async fn create(&self, email: &str, username: &str) -> Result<i64, anyhow::Error> {
+    pub async fn create(
+        &self,
+        email: &str,
+        username: &str,
+        srp_verifier: &[u8],
+        srp_salt: &[u8],
+    ) -> Result<i64, anyhow::Error> {
         let id = sqlx::query_scalar(
-            r#"INSERT INTO users (email, username) VALUES ($1, $2) RETURNING id"#,
+            r#"INSERT INTO users (email, username, srp_verifier, srp_salt) 
+               VALUES ($1, $2, $3, $4) 
+               RETURNING id"#,
         )
         .bind(email)
         .bind(username)
+        .bind(srp_verifier)
+        .bind(srp_salt)
         .fetch_one(&self.database)
         .await?;
 
@@ -41,12 +51,29 @@ impl UserRepo {
         Ok(user)
     }
 
-    pub async fn update(&self, email: &str, username: &str) -> Result<(), anyhow::Error> {
-        todo!()
+    pub async fn update(&self, id: i64, email: &str, username: &str) -> Result<(), anyhow::Error> {
+        sqlx::query(
+            r#"UPDATE users 
+               SET email = $1 
+               SET username = $2 
+               WHERE id = $3"#,
+        )
+        .bind(email)
+        .bind(username)
+        .bind(id)
+        .execute(&self.database)
+        .await?;
+
+        Ok(())
     }
 
     pub async fn delete(&self, id: i64) -> Result<(), anyhow::Error> {
-        todo!()
+        sqlx::query(r#"DELETE FROM users WHERE id = $1"#)
+            .bind(id)
+            .execute(&self.database)
+            .await?;
+
+        Ok(())
     }
 }
 
@@ -81,7 +108,12 @@ impl PreRegistrationRepo {
         Ok(pre_registration)
     }
 
-    pub async fn delete(&self, id: i64) -> Result<(), anyhow::Error> {
-        todo!()
+    pub async fn delete_by_email(&self, email: &str) -> Result<(), anyhow::Error> {
+        sqlx::query(r#"DELETE FROM pre_registrations WHERE email = $1"#)
+            .bind(email)
+            .execute(&self.database)
+            .await?;
+
+        Ok(())
     }
 }

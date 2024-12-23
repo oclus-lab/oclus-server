@@ -1,4 +1,4 @@
-use crate::util;
+use crate::utils;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use validator::Validate;
@@ -8,6 +8,8 @@ pub struct User {
     pub id: i64,
     pub email: String,
     pub username: String,
+    pub srp_verifier: Vec<u8>,
+    pub srp_salt: Vec<u8>,
 }
 
 #[derive(FromRow, Clone, Debug)]
@@ -26,14 +28,13 @@ pub struct PreRegisterUserRequest {
 #[derive(Serialize, Deserialize, Validate, Clone, Debug)]
 pub struct RegisterUserRequest {
     pub pre_registration_id: i64,
-
     #[validate(length(equal = 6))]
     pub otp: String,
-
-    #[serde(with = "util::serde::base64")]
+    #[validate(length(min = 3, max = 20))]
+    pub username: String,
+    #[serde(with = "utils::serde::base64")]
     #[validate(length(equal = 256))]
-    pub auth_verifier: Vec<u8>,
-
-    #[serde(with = "util::serde::base64")]
-    pub auth_salt: Vec<u8>,
+    pub srp_verifier: Vec<u8>,
+    #[serde(with = "utils::serde::base64")]
+    pub srp_salt: Vec<u8>,
 }

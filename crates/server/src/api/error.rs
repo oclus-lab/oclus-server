@@ -54,13 +54,15 @@ impl ResponseError for ApiError {
 }
 
 impl From<anyhow::Error> for ApiError {
-    fn from(_value: anyhow::Error) -> Self {
+    fn from(value: anyhow::Error) -> Self {
+        log::error!("{:?}", value);
         ApiError::from(ApiErrorKind::Unknown)
     }
 }
 
 impl From<ValidationErrors> for ApiError {
     fn from(value: ValidationErrors) -> Self {
+        log::info!("invalid data provided: {:?}", value);
         ApiError::from(ApiErrorKind::InvalidData(value.to_string()))
     }
 }
