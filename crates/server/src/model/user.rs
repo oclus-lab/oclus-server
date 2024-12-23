@@ -1,7 +1,7 @@
+use crate::util;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use validator::Validate;
-use crate::util;
 
 #[derive(FromRow, Clone, Debug)]
 pub struct User {
@@ -26,7 +26,7 @@ pub struct PreRegisterUserRequest {
 #[derive(Serialize, Deserialize, Validate, Clone, Debug)]
 pub struct RegisterUserRequest {
     pub pre_registration_id: i64,
-    
+
     #[validate(length(equal = 6))]
     pub otp: String,
 
@@ -36,22 +36,4 @@ pub struct RegisterUserRequest {
 
     #[serde(with = "util::serde::base64")]
     pub auth_salt: Vec<u8>,
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum PreRegisterUserError {
-    #[error(transparent)]
-    InvalidData(#[from] validator::ValidationErrors),
-    #[error(transparent)]
-    Unknown(#[from] anyhow::Error),
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum RegisterUserError {
-    #[error("pre-registration not found")]
-    PreRegistrationNotFound,
-    #[error("the provided otp does not match the stored one")]
-    InvalidOtp,
-    #[error(transparent)]
-    Unknown(#[from] anyhow::Error),
 }

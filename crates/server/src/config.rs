@@ -1,11 +1,12 @@
 use std::fs::File;
 use std::path::Path;
 use anyhow::Context;
+use log::LevelFilter;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
-    pub log_level: String,
+    pub log_level: LevelFilter,
     pub otp_secret: String,
     pub token_secret: String,
     pub database_url: String,

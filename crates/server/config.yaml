@@ -1,4 +1,4 @@
-log_level: info
+log_level: "warn"
 otp_secret: "very_strong_secret"
 token_secret: "very_strong_secret"
 database_url: "postgresql://oclus:oclus@localhost:5432/oclus"
