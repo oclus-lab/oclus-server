@@ -1,2 +1,3 @@
 pub mod middleware;
-pub mod routes;
+pub mod route;
+pub mod error;
