@@ -1,1 +1,1 @@
-pub use oclus_server::model::user::{RegisterUserRequest, PreRegisterUserRequest};
+pub use oclus_server::model::user::registration::{RegistrationRequest, PreRegistrationRequest};

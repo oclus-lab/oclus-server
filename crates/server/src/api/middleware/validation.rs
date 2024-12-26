@@ -1,4 +1,4 @@
-use crate::api::error::{ApiError, ApiErrorKind};
+use crate::api::error::ApiError;
 use actix_web::dev::Payload;
 use actix_web::web::Json;
 use actix_web::{FromRequest, HttpRequest};
@@ -36,10 +36,10 @@ where
         Box::pin(async move {
             let json = json
                 .await
-                .map_err(|err| ApiError::from(ApiErrorKind::InvalidData(err.to_string())))?;
+                .map_err(|err| ApiError::InvalidData(err.to_string()))?;
 
             json.validate()
-                .map_err(|err| ApiError::from(ApiErrorKind::InvalidData(err.to_string())))?;
+                .map_err(|err| ApiError::InvalidData(err.to_string()))?;
 
             Ok(ValidatedJson(json.0))
         })

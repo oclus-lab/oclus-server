@@ -2,9 +2,9 @@ use actix_web::web::Data;
 use actix_web::{middleware, App, HttpServer};
 use oclus_server::api::route;
 use oclus_server::config::Config;
-use oclus_server::db::init_database;
-use oclus_server::db::repo::RepoCollection;
+use oclus_server::infra::db::init_db;
 use simplelog::{ColorChoice, CombinedLogger, TermLogger, TerminalMode};
+use oclus_server::service::ServiceCollection;
 
 #[actix_web::main]
 async fn main() -> Result<(), anyhow::Error> {
@@ -17,13 +17,13 @@ async fn main() -> Result<(), anyhow::Error> {
         ColorChoice::Auto,
     )])?;
 
-    let database = init_database(&config.database_url).await?;
-    let repo_collection = RepoCollection::new(database);
+    let db = init_db(&config.db_url).await?;
+    let services = ServiceCollection::new(&config, db)?;
 
     HttpServer::new(move || {
         App::new()
             .configure(route::define_routes)
-            .app_data(Data::new(repo_collection.clone()))
+            .app_data(Data::new(services.clone()))
             .app_data(Data::new(config.clone()))
             .wrap(middleware::Logger::default())
     })

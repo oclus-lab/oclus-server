@@ -1,1 +1,1 @@
-pub use oclus_server::api::error::ApiErrorKind;
+pub use oclus_server::api::error::ApiError;

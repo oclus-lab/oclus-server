@@ -1,14 +1,15 @@
-use crate::model::user::{PreRegistration, User};
+use crate::model::user::registration::PreRegistration;
+use crate::model::user::User;
 use sqlx::{Pool, Postgres};
 
 #[derive(Clone, Debug)]
 pub struct UserRepo {
-    database: Pool<Postgres>,
+    db: Pool<Postgres>,
 }
 
 impl UserRepo {
-    pub fn new(database: Pool<Postgres>) -> Self {
-        Self { database }
+    pub fn new(db: Pool<Postgres>) -> Self {
+        Self { db }
     }
 
     pub async fn create(
@@ -27,7 +28,7 @@ impl UserRepo {
         .bind(username)
         .bind(srp_verifier)
         .bind(srp_salt)
-        .fetch_one(&self.database)
+        .fetch_one(&self.db)
         .await?;
 
         Ok(id)
@@ -36,7 +37,7 @@ impl UserRepo {
     pub async fn get(&self, id: i64) -> Result<Option<User>, anyhow::Error> {
         let user = sqlx::query_as(r#"SELECT * FROM users WHERE id = $1"#)
             .bind(id)
-            .fetch_optional(&self.database)
+            .fetch_optional(&self.db)
             .await?;
 
         Ok(user)
@@ -45,7 +46,7 @@ impl UserRepo {
     pub async fn get_by_email(&self, email: &str) -> Result<Option<User>, anyhow::Error> {
         let user = sqlx::query_as(r#"SELECT * FROM users WHERE email = $1"#)
             .bind(email)
-            .fetch_optional(&self.database)
+            .fetch_optional(&self.db)
             .await?;
 
         Ok(user)
@@ -61,7 +62,7 @@ impl UserRepo {
         .bind(email)
         .bind(username)
         .bind(id)
-        .execute(&self.database)
+        .execute(&self.db)
         .await?;
 
         Ok(())
@@ -70,7 +71,7 @@ impl UserRepo {
     pub async fn delete(&self, id: i64) -> Result<(), anyhow::Error> {
         sqlx::query(r#"DELETE FROM users WHERE id = $1"#)
             .bind(id)
-            .execute(&self.database)
+            .execute(&self.db)
             .await?;
 
         Ok(())
@@ -79,12 +80,12 @@ impl UserRepo {
 
 #[derive(Clone, Debug)]
 pub struct PreRegistrationRepo {
-    database: Pool<Postgres>,
+    db: Pool<Postgres>,
 }
 
 impl PreRegistrationRepo {
-    pub fn new(database: Pool<Postgres>) -> Self {
-        Self { database }
+    pub fn new(db: Pool<Postgres>) -> Self {
+        Self { db }
     }
 
     pub async fn create(&self, email: &str, otp: &str) -> Result<i64, anyhow::Error> {
@@ -93,7 +94,7 @@ impl PreRegistrationRepo {
         )
         .bind(email)
         .bind(otp)
-        .fetch_one(&self.database)
+        .fetch_one(&self.db)
         .await?;
 
         Ok(id)
@@ -102,7 +103,7 @@ impl PreRegistrationRepo {
     pub async fn get(&self, id: i64) -> Result<Option<PreRegistration>, anyhow::Error> {
         let pre_registration = sqlx::query_as(r#"SELECT * FROM pre_registrations WHERE id = $1"#)
             .bind(id)
-            .fetch_optional(&self.database)
+            .fetch_optional(&self.db)
             .await?;
 
         Ok(pre_registration)
@@ -111,7 +112,7 @@ impl PreRegistrationRepo {
     pub async fn delete_by_email(&self, email: &str) -> Result<(), anyhow::Error> {
         sqlx::query(r#"DELETE FROM pre_registrations WHERE email = $1"#)
             .bind(email)
-            .execute(&self.database)
+            .execute(&self.db)
             .await?;
 
         Ok(())
